@@ -1,0 +1,123 @@
+----------------------------------------------------------------------------------
+-- Company: 
+-- Engineer: 
+-- 
+-- Create Date:    10:27:53 10/14/2023 
+-- Design Name: 
+-- Module Name:    askisi_1 - Behavioral 
+-- Project Name: 
+-- Target Devices: 
+-- Tool versions: 
+-- Description: 
+--
+-- Dependencies: 
+--
+-- Revision: 
+-- Revision 0.01 - File Created
+-- Additional Comments: 
+--
+----------------------------------------------------------------------------------
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use ieee.std_logic_unsigned.all;--xreiazetai gia na ginei to +
+
+-- Uncomment the following library declaration if using
+-- arithmetic functions with Signed or Unsigned values
+--use IEEE.NUMERIC_STD.ALL;
+
+-- Uncomment the following library declaration if instantiating
+-- any Xilinx primitives in this code.
+--library UNISIM;
+--use UNISIM.VComponents.all;
+
+entity askisi_1 is
+    Port ( Clk : in  STD_LOGIC;
+           RST : in  STD_LOGIC;
+           Control : in  STD_LOGIC_VECTOR (2 downto 0);
+           Count : out  STD_LOGIC_VECTOR (7 downto 0);
+           Overflow : out  STD_LOGIC;
+           Underflow : out  STD_LOGIC;
+           Valid : out  STD_LOGIC);
+end askisi_1;
+
+architecture Behavioral of askisi_1 is
+
+signal Count_temp:STD_LOGIC_VECTOR(7 downto 0);
+
+begin
+
+process
+begin 	
+	wait until Clk'event and Clk='1';
+	if RST='1' then
+		Count_temp<="00000000";
+		Overflow <= '0';
+		Underflow <= '0';
+		Valid <= '1';
+	else
+		if Control="000" then
+			if Count_temp<5 then
+				Underflow<='1';
+				Valid<='0';
+			else
+				Count_temp<=Count_temp -5;
+				Valid<='1';
+			end if;
+		elsif Control="001" then
+			if Count_temp<2 then 
+				Underflow<='1';
+				Valid<='0';
+			else
+				Count_temp<=Count_temp -2;
+				Valid<='1';
+			end if;
+		elsif Control="010" then
+			Count_temp<=Count_temp;
+			Valid<='1';
+		elsif Control="011" then
+			if Count_temp=255 then
+				Overflow<='1';
+				Valid<='0';
+			else
+				Count_temp<=Count_temp +1;
+				Valid<='1';
+			end if;
+		elsif Control="100" then
+			if Count_temp>253 then
+				Overflow<='1';
+				Valid<='0';
+			else
+				Count_temp<=Count_temp +2;
+				Valid<='1';
+			end if;
+		elsif Control="101" then
+			if Count_temp>250 then
+				Overflow<='1';
+				Valid<='0';
+			else
+				Count_temp<=Count_temp +5;
+				Valid<='1';
+			end if;
+		elsif Control="110" then
+			if Count_temp>249 then 
+				Overflow<='1';
+				Valid<='0';
+			else
+				Count_temp<=Count_temp +6;
+				Valid<='1';
+			end if;
+		elsif Control="111" then
+			if Count_temp>243 then
+				Overflow<='1';
+				Valid<='0';
+			else
+				Count_temp<=Count_temp +12;
+				Valid<='1';
+			end if;
+		end if;
+		--Count_temp<=Count_temp;
+		--Valid<='1';
+	end if;
+end process;
+Count<=Count_temp;
+end Behavioral;

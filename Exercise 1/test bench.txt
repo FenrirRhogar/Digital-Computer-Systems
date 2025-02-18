@@ -1,0 +1,144 @@
+--------------------------------------------------------------------------------
+-- Company: 
+-- Engineer:
+--
+-- Create Date:   12:38:27 10/15/2023
+-- Design Name:   
+-- Module Name:   /home/ise/askis_ergastiriou_1/test_askisi_1.vhd
+-- Project Name:  askis_ergastiriou_1
+-- Target Device:  
+-- Tool versions:  
+-- Description:   
+-- 
+-- VHDL Test Bench Created by ISE for module: askisi_1
+-- 
+-- Dependencies:
+-- 
+-- Revision:
+-- Revision 0.01 - File Created
+-- Additional Comments:
+--
+-- Notes: 
+-- This testbench has been automatically generated using types std_logic and
+-- std_logic_vector for the ports of the unit under test.  Xilinx recommends
+-- that these types always be used for the top-level I/O of a design in order
+-- to guarantee that the testbench will bind correctly to the post-implementation 
+-- simulation model.
+--------------------------------------------------------------------------------
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+ 
+-- Uncomment the following library declaration if using
+-- arithmetic functions with Signed or Unsigned values
+--USE ieee.numeric_std.ALL;
+ 
+ENTITY test_askisi_1 IS
+END test_askisi_1;
+ 
+ARCHITECTURE behavior OF test_askisi_1 IS 
+ 
+    -- Component Declaration for the Unit Under Test (UUT)
+ 
+    COMPONENT askisi_1
+    PORT(
+         Clk : IN  std_logic;
+         RST : IN  std_logic;
+         Control : IN  std_logic_vector(2 downto 0);
+         Count : OUT  std_logic_vector(7 downto 0);
+         Overflow : OUT  std_logic;
+         Underflow : OUT  std_logic;
+         Valid : OUT  std_logic
+        );
+    END COMPONENT;
+    
+
+   --Inputs
+   signal Clk : std_logic := '0';
+   signal RST : std_logic := '0';
+   signal Control : std_logic_vector(2 downto 0) := (others => '0');
+
+ 	--Outputs
+   signal Count : std_logic_vector(7 downto 0);
+   signal Overflow : std_logic;
+   signal Underflow : std_logic;
+   signal Valid : std_logic;
+
+   -- Clock period definitions
+   constant Clk_period : time := 10 ns;
+ 
+BEGIN
+ 
+	-- Instantiate the Unit Under Test (UUT)
+   uut: askisi_1 PORT MAP (
+          Clk => Clk,
+          RST => RST,
+          Control => Control,
+          Count => Count,
+          Overflow => Overflow,
+          Underflow => Underflow,
+          Valid => Valid
+        );
+
+   
+	--Clock process definitions
+   Clk_process :process
+   begin
+		Clk <= '0';
+		wait for Clk_period/2;
+		Clk <= '1';
+		wait for Clk_period/2;
+   end process;
+ 
+
+   -- Stimulus process
+   stim_proc: process
+   begin
+	RST<='1';
+	wait for 10*Clk_period;
+	RST<='0';
+	Control<="111";
+	wait for 25*CLk_period;--afkanei kata 12 kai ginete overflow
+	RST<='1';--midenizei kai sinexizei
+	wait for 10*Clk_period;
+	RSt<='0';
+	Control<="110";
+	wait for 45*Clk_period;--afksani kata 6 kai ginete overflow
+	Rst<='1';
+	wait for 10*Clk_period;
+	Rst<='0';
+	Control<="101";--afksani kata 5 kai ginetai overflow
+	wait for 60*Clk_period;
+	Rst<='1';
+	wait for 10*Clk_period;
+	Rst<='0';
+	Control<="100";--afksanei kata 2 kai kanei overflow
+	wait for 160*Clk_period;
+	Rst<='1';
+	wait for 10*Clk_period;
+	Rst<='0';
+	Control<="011";
+	wait for 260*Clk_period;--afksanei kata 1 kai kanei overflow 
+	Rst<='1';
+	wait for 10*Clk_period;
+	Rst<='0';
+	Control<="010";--paramenei i timi statheri
+	wait for 10*Clk_period;
+	Rst<='1';
+	wait for 10*Clk_period;
+	Rst<='0';
+	Control<="111";-- afksano ligo to Count gia na elekso tin afairesi
+	wait for 10*Clk_period;
+	Control<="001";--afairi kata 2 kai ginetai underflow
+	wait for 70*Clk_period;
+	Rst<='1';
+	wait for 10*Clk_period;
+	Rst<='0';
+	Control<="111";--afkanoume to count gia na alaksoume tin telftaia periptosi
+	wait for 10*Clk_period;
+	Control<="000";--afairi kata 5 kai kanei underflow 
+	wait for 30*Clk_period;
+	Rst<='1';
+	wait;
+   end process;
+
+END;

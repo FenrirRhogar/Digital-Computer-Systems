@@ -1,0 +1,90 @@
+----------------------------------------------------------------------------------
+-- Company: 
+-- Engineer: 
+-- 
+-- Create Date:    20:27:54 10/17/2023 
+-- Design Name: 
+-- Module Name:    main - Behavioral 
+-- Project Name: 
+-- Target Devices: 
+-- Tool versions: 
+-- Description: 
+--
+-- Dependencies: 
+--
+-- Revision: 
+-- Revision 0.01 - File Created
+-- Additional Comments: 
+--
+----------------------------------------------------------------------------------
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+-- Uncomment the following library declaration if using
+-- arithmetic functions with Signed or Unsigned values
+--use IEEE.NUMERIC_STD.ALL;
+
+-- Uncomment the following library declaration if instantiating
+-- any Xilinx primitives in this code.
+--library UNISIM;
+--use UNISIM.VComponents.all;
+
+entity main is
+    Port ( Clk : in  STD_LOGIC;
+           RST : in  STD_LOGIC;
+           A : in  STD_LOGIC;
+           B : in  STD_LOGIC;
+           Control : out  STD_LOGIC_VECTOR (2 downto 0));
+end main;
+
+architecture Behavioral of main is
+
+signal Control_temp:STD_LOGIC_VECTOR (2 downto 0);
+
+begin
+process
+begin
+	wait until Clk'event and Clk='1';
+	if RST='1' then
+		Control_temp <= "000";
+	else
+		case Control_temp is
+			when "000" =>
+				if A = '1' AND B = '0' then
+					Control_temp<="001";
+				elsif A = '0' AND B = '1' then
+					Control_temp<="100";
+				end if;			
+			when "001" =>
+				if A = '1' AND B = '0' then
+					Control_temp<="010";
+				elsif A = '0' AND B = '1' then
+					Control_temp<="000";
+				end if;
+			when "010" =>
+				if A = '1' AND B = '0' then
+					Control_temp<="011";
+				elsif A = '0' AND B = '1' then
+					Control_temp<="001";
+				end if;
+			when "011" =>
+				if A = '1' AND B = '0' then
+					Control_temp<="100";
+				elsif A = '0' AND B = '1' then
+					Control_temp<="010";
+				end if;
+			when "100" =>
+				if A = '1' AND B = '0' then
+					Control_temp<="000";
+				elsif A = '0' AND B = '1' then
+					Control_temp<="011";
+				end if;
+			when others =>
+				Control_temp<=Control_temp;
+		end case;
+	end if;
+	end process;
+	Control<=Control_temp;
+end Behavioral;
+
+
